@@ -15,7 +15,6 @@ public class webSecurityConfig {
     
     @Bean
     public SecurityFilterChain applicationSecurity(HttpSecurity http) throws Exception{
-        return
     }
 
 
