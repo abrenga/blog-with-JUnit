@@ -1,6 +1,8 @@
 package com.social.myblog.DTOs;
 
 import com.social.myblog.model.User;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
@@ -9,12 +11,26 @@ import java.time.LocalDate;
 
 public class PostResponseDTO {
     public boolean inserito;
+    @Setter
+    @Getter
     private Integer id;
+    @Setter
+    @Getter
     private String title;
+    @Setter
+    @Getter
     private String content;
+    @Setter
+    @Getter
     private User author;
+    @Setter
+    @Getter
     private LocalDate date;
+    @Setter
+    @Getter
     private String image;
+    @Setter
+    @Getter
     private String url;
 
     
@@ -32,64 +48,6 @@ public class PostResponseDTO {
         this.date = LocalDate.now();
         this.url=url;
         
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
     }
 
 

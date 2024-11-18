@@ -2,42 +2,38 @@ package com.social.myblog.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.social.myblog.DTOs.PostRequestDTO;
 import com.social.myblog.DTOs.PostResponseDTO;
 import com.social.myblog.model.Post;
 import com.social.myblog.model.User;
-import com.social.myblog.repository.PostRepo;
-import com.social.myblog.repository.UserRepo;
 import com.social.myblog.service.MyBlogService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+;
 
 @WebMvcTest(controllers = MyBlogRestController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -66,7 +62,33 @@ public class MyBlogRestControllerTest {
     private Post post;
 
 
-    
+    @Test
+    public void MyBlogController_addMyBlogPost_ok() throws Exception {
+
+        PostRequestDTO postProva = new PostRequestDTO(1, "titolo", "contenuto", new User(), LocalDate.now(), "/uploads");
+        ObjectMapper mapper = JsonMapper.builder()
+                .addModule(new JavaTimeModule())
+                .build();
+        String json = mapper.writeValueAsString(postProva);
+        Post post = new Post(1, "titolo", "contenuto", new User(), "/uploads");
+
+        when(myBlogService.uploadURl(any())).thenReturn(post.getUrl());
+
+        when(myBlogService.createPost(postProva, post.getUrl()))
+                .thenReturn(post);
+
+        ResultActions boh = mockMvc.perform(
+                multipart("/")
+                        .file(new MockMultipartFile("dto", "filedt", "application/json", json.getBytes()))
+                        .file(new MockMultipartFile("json", "yuygyyg", "multipart/form-data", "{\"json\": \"someValue\"}".getBytes())));
+
+        boh.andExpect(status().is(200));
+
+
+    }
+
+
+
     @Test
     public void MyBlogRestController_GetAllPosts_ok() throws Exception {
 
@@ -79,10 +101,10 @@ public class MyBlogRestControllerTest {
 
         when(myBlogService.getAllPosts()).thenReturn(listaPostFittizzi);
 
-        mockMvc.perform(get("/index")
+        mockMvc.perform(get("/")
             .contentType(MediaType.APPLICATION_JSON)
-                //controlla perche non accetta andExpect
-        );
+
+        ).andExpect(status().isOk());
     }
 
     @Test
@@ -96,10 +118,32 @@ public class MyBlogRestControllerTest {
                 .thenReturn(post);
 
         mockMvc.perform(
-            get("/index/{id}", 1))
-            .andExpect(status().isOk()
-        );
+                        get("/{id}", 1))
+                .andExpect(status().isOk());
 
 
     }
+
+
+    @Test
+    public void MyBlogPost_updateThePost_ok() throws Exception {
+        PostResponseDTO responseDTO = new PostResponseDTO(1, "titolo", "contenuto", new User(), "/uploads");
+        Post post = new Post(1, "titolo", "contenuto", new User(), "/uploads");
+        PostRequestDTO postDto = new PostRequestDTO(1, "titolo", "contenuto", new User(), LocalDate.now(), "/uploads");
+        when(myBlogService.updatePost(postDto, 1)).thenReturn(post);
+
+        mockMvc.perform(post("/{id}", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(responseDTO))
+        );
+    }
+
+    @Test
+    public void MyBlogRestController_deletePost_ok() throws Exception {
+        Post post = new Post(1, "titolo", "contenuto", new User(), "/uploads");
+        mockMvc.perform(post("/delete/{id}", 1))
+                .andExpect(status().is(200));
+
+    }
+
 }

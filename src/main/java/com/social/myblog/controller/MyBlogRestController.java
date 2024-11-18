@@ -5,8 +5,10 @@ import com.social.myblog.DTOs.PostResponseDTO;
 import com.social.myblog.model.Post;
 import com.social.myblog.repository.UserRepo;
 import com.social.myblog.service.IMyBlogService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,7 +53,7 @@ public class MyBlogRestController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostRequestDTO> getMyBlogPostById(@RequestParam @PathVariable Integer id) throws Exception {
+    public ResponseEntity<PostRequestDTO> getMyBlogPostById(@PathVariable Integer id) throws Exception {
         Post post = myBlogService.getPostById(id);
         PostRequestDTO response = new PostRequestDTO();
         response.setAuthor(post.getAuthor());
@@ -66,14 +68,15 @@ public class MyBlogRestController {
 
     }
 
-    @PostMapping
-    public ResponseEntity<PostResponseDTO> addMyBlogPost(@RequestBody PostRequestDTO request, @RequestParam MultipartFile file) throws Exception {
+    @PostMapping//(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<PostResponseDTO> addMyBlogPost(@RequestPart(value = "dto") PostRequestDTO request, @RequestPart(value = "json") MultipartFile file) throws Exception {
         if (file.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
         try {
             String percorso = myBlogService.uploadURl(file);
-            myBlogService.createPost(request, file.toString());
+            myBlogService.createPost(request, percorso);
 
             PostResponseDTO response = new PostResponseDTO();
             response.setAuthor(request.getAuthor());
