@@ -50,7 +50,7 @@ public class MyBlogServiceTests {
 
         postRequest.setTitle("My Blog");
         postRequest.setContent("My Blog Content");
-        postRequest.setAuthor(new User());
+        postRequest.setAuthorId(1);
         postRequest.setDate(LocalDate.now());
         postRequest.setUrl("url/finto");
 
@@ -77,7 +77,7 @@ public class MyBlogServiceTests {
     @Test
     public void myBlogService_createPost_fail() {
         Post post = new Post(1, "My Blog", "My bog content", new User(), "rappresenta/url");
-        PostRequestDTO postRequest = new PostRequestDTO(1, "My Blog", "My bog content", new User(), LocalDate.now(), "rappresenta/url");
+        PostRequestDTO postRequest = new PostRequestDTO(1, "My Blog", "My bog content", 1, LocalDate.now(), "rappresenta/url");
 
         Assertions.assertNotEquals(0, post.getId());
         when(postRepo.save(post)).thenReturn(post);
@@ -165,7 +165,7 @@ public class MyBlogServiceTests {
     @Test
     public void updatePostTest_ok() throws Exception {
         Post post = new Post(1, "My Blog", "My bog content", new User(), "urlFintoQuattro");
-        PostRequestDTO postDTO = new PostRequestDTO(1, "My Blog", "My bog content", new User(), LocalDate.now(), "urlFintoQuattro");
+        PostRequestDTO postDTO = new PostRequestDTO(1, "My Blog", "My bog content", 1, LocalDate.now(), "urlFintoQuattro");
 
         post.setTitle("My Blog modificato");
         post.setContent("My content modificato");
@@ -173,7 +173,7 @@ public class MyBlogServiceTests {
 
         postDTO.setTitle("My Blog modificato");
         postDTO.setContent("My content modificato");
-        postDTO.setAuthor(new User());
+        postDTO.setAuthorId(1);
 
 
         when(postRepo.findById(1)).thenReturn(Optional.of(post));

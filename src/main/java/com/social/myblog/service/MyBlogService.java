@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MyBlogService implements IMyBlogService {
@@ -29,10 +30,11 @@ public class MyBlogService implements IMyBlogService {
     private static final String UPLOAD_DIR = "uploads/";
 
     public Post createPost(PostRequestDTO post, String url) {
+        Optional<User> user = userRepo.findById(post.getAuthorId());
         Post postEntity = new Post();
         postEntity.setTitle(post.getTitle());
         postEntity.setContent(post.getContent());
-        postEntity.setAuthor(post.getAuthor());
+        postEntity.setAuthor(user.get());
         postEntity.setDate(LocalDate.now());
         postEntity.setUrl(url);
 
@@ -65,14 +67,17 @@ public class MyBlogService implements IMyBlogService {
     }
 
     public Post updatePost(PostRequestDTO post, Integer id) throws Exception {
-        if (post.getId() < 0 || post.getAuthor() == null || post.getContent() == null || post.getContent() == "") {
+        if (post.getId() < 0 || post.getAuthorId()==0|| post.getContent() == null || post.getContent().isEmpty()) {
             throw new Exception();
         }
+
+        Optional<User> user = userRepo.findById(post.getAuthorId());
+
         Post postDaConfermare = getPostById(post.getId());
 
         postDaConfermare.setTitle(post.getTitle());
         postDaConfermare.setContent(post.getContent());
-        postDaConfermare.setAuthor(post.getAuthor());
+        postDaConfermare.setAuthor(user.get());
         postDaConfermare.setId(id);
         postDaConfermare.getDate();
 

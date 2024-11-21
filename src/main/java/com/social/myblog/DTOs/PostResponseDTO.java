@@ -22,7 +22,7 @@ public class PostResponseDTO {
     private String content;
     @Setter
     @Getter
-    private User author;
+    private String author;
     @Setter
     @Getter
     private LocalDate date;
@@ -40,7 +40,7 @@ public class PostResponseDTO {
     }
     
     
-    public PostResponseDTO(int id, String title, String content, User author,String url) {
+    public PostResponseDTO(int id, String title, String content, String author,String url) {
         this.id = id;
         this.title = title;
         this.content = content;

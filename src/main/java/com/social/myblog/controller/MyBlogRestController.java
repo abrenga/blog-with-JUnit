@@ -6,6 +6,7 @@ import com.social.myblog.model.Post;
 import com.social.myblog.repository.UserRepo;
 import com.social.myblog.service.IMyBlogService;
 
+import com.social.myblog.service.MyBlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -17,16 +18,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController("index")
+@RestController
+@RequestMapping("posts")
 public class MyBlogRestController {
 
     @Autowired
-    private IMyBlogService myBlogService;
+    private MyBlogService myBlogService;
     @Autowired
     private UserRepo userRepo;
 
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<PostResponseDTO>> getMyBlogPosts() {
         List<Post> posts = myBlogService.getAllPosts();
         List<PostResponseDTO> postResponseDTOs = new ArrayList<>();
@@ -41,7 +43,7 @@ public class MyBlogRestController {
 
         postResponseDTOs = posts.stream().map((post) -> {
             PostResponseDTO postDTO = new PostResponseDTO();
-            postDTO.setAuthor(post.getAuthor());
+            postDTO.setAuthor(post.getAuthor().getUsername());
             postDTO.setTitle(post.getTitle());
             postDTO.setContent(post.getContent());
             postDTO.setDate(post.getDate());
@@ -53,10 +55,12 @@ public class MyBlogRestController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostRequestDTO> getMyBlogPostById(@PathVariable Integer id) throws Exception {
+    public ResponseEntity<PostResponseDTO> getMyBlogPostById(@PathVariable Integer id) throws Exception {
         Post post = myBlogService.getPostById(id);
-        PostRequestDTO response = new PostRequestDTO();
-        response.setAuthor(post.getAuthor());
+
+        PostResponseDTO response = new PostResponseDTO();
+        response.setId(post.getId());
+        response.setAuthor(post.getAuthor().getUsername());
         response.setTitle(post.getTitle());
         response.setContent(post.getContent());
 
@@ -76,10 +80,11 @@ public class MyBlogRestController {
 
         try {
             String percorso = myBlogService.uploadURl(file);
-            myBlogService.createPost(request, percorso);
+            Post post = myBlogService.createPost(request, percorso);
 
             PostResponseDTO response = new PostResponseDTO();
-            response.setAuthor(request.getAuthor());
+
+            response.setAuthor(post.getAuthor().getUsername());
             response.setContent(request.getContent());
             response.setTitle(request.getTitle());
             response.setImage(percorso);
@@ -103,7 +108,7 @@ public class MyBlogRestController {
         Post postModificato = myBlogService.updatePost(request, id);
 
         PostResponseDTO response = new PostResponseDTO();
-        response.setAuthor(postModificato.getAuthor());
+        response.setAuthor(postModificato.getAuthor().getUsername());//controlla qui
         response.setContent(postModificato.getContent());
         response.setTitle(postModificato.getTitle());
 

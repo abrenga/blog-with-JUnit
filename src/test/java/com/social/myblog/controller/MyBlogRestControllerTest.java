@@ -65,7 +65,7 @@ public class MyBlogRestControllerTest {
     @Test
     public void MyBlogController_addMyBlogPost_ok() throws Exception {
 
-        PostRequestDTO postProva = new PostRequestDTO(1, "titolo", "contenuto", new User(), LocalDate.now(), "/uploads");
+        PostRequestDTO postProva = new PostRequestDTO(1, "titolo", "contenuto", 1, LocalDate.now(), "/uploads");
         ObjectMapper mapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule())
                 .build();
@@ -127,9 +127,9 @@ public class MyBlogRestControllerTest {
 
     @Test
     public void MyBlogPost_updateThePost_ok() throws Exception {
-        PostResponseDTO responseDTO = new PostResponseDTO(1, "titolo", "contenuto", new User(), "/uploads");
+        PostResponseDTO responseDTO = new PostResponseDTO(1, "titolo", "contenuto", "pino", "/uploads");
         Post post = new Post(1, "titolo", "contenuto", new User(), "/uploads");
-        PostRequestDTO postDto = new PostRequestDTO(1, "titolo", "contenuto", new User(), LocalDate.now(), "/uploads");
+        PostRequestDTO postDto = new PostRequestDTO(1, "titolo", "contenuto", 1, LocalDate.now(), "/uploads");
         when(myBlogService.updatePost(postDto, 1)).thenReturn(post);
 
         mockMvc.perform(post("/{id}", 1)

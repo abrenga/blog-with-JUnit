@@ -6,21 +6,19 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-
+@Getter
+@Setter
 @Entity
 @Data
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Getter
-    @Setter
+    private Integer id;
+
     private String username;
-    @Getter
-    @Setter
+
     private String password;
-    @Getter
-    @Setter
+
     private String email;
 
 
