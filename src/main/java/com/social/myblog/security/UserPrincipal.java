@@ -13,7 +13,7 @@ import java.util.Collection;
 public class UserPrincipal implements UserDetails {
 
     private final String username;
-    private final int userId;
+    private final Integer userId;
     private final Collection<? extends GrantedAuthority> authorities;
 
 

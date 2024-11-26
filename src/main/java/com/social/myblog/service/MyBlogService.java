@@ -6,6 +6,7 @@ import com.social.myblog.model.User;
 import com.social.myblog.repository.PostRepo;
 import com.social.myblog.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,8 +31,12 @@ public class MyBlogService implements IMyBlogService {
     private static final String UPLOAD_DIR = "uploads/";
 
     public Post createPost(PostRequestDTO post, String url) {
-        Optional<User> user = userRepo.findById(post.getAuthorId());
+
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> user = userRepo.findById(principal.getId());
+
         Post postEntity = new Post();
+
         postEntity.setTitle(post.getTitle());
         postEntity.setContent(post.getContent());
         postEntity.setAuthor(user.get());
@@ -48,8 +53,8 @@ public class MyBlogService implements IMyBlogService {
     }
 
 
-    public List<Post> getPostsByUser(User user) {
-        List<Post> postsOfUser = postRepo.findByUserId(user);
+    public List<Post> getPostsByUserId(Integer userId) {
+        List<Post> postsOfUser = postRepo.findByUserId(userId);
         return postsOfUser;
     }
 
@@ -67,17 +72,19 @@ public class MyBlogService implements IMyBlogService {
     }
 
     public Post updatePost(PostRequestDTO post, Integer id) throws Exception {
-        if (post.getId() < 0 || post.getAuthorId()==0|| post.getContent() == null || post.getContent().isEmpty()) {
+
+        if (post.getId() < 0 || post.getContent() == null || post.getContent().isEmpty()) {
             throw new Exception();
         }
 
-        Optional<User> user = userRepo.findById(post.getAuthorId());
+        Optional<Post> postDaModificare = postRepo.findById(id);
 
         Post postDaConfermare = getPostById(post.getId());
+        User userDaMantenere = postDaConfermare.getUser();
 
         postDaConfermare.setTitle(post.getTitle());
         postDaConfermare.setContent(post.getContent());
-        postDaConfermare.setAuthor(user.get());
+        postDaConfermare.setAuthor(userDaMantenere);
         postDaConfermare.setId(id);
         postDaConfermare.getDate();
 
@@ -104,6 +111,7 @@ public class MyBlogService implements IMyBlogService {
         Files.write(percorso, file.getBytes());
         return percorso.toString();
     }
+
 
 
 

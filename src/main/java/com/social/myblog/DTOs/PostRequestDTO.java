@@ -16,7 +16,7 @@ private Integer id;
 
     private String content;
 
-    private Integer authorId;
+    //private Integer authorId;
     private LocalDate date;
 
     private String url;
@@ -25,10 +25,10 @@ private Integer id;
 
     }
 
-    public PostRequestDTO(Integer id, String title, String content, Integer authorId, LocalDate date, String url) {
+    public PostRequestDTO(Integer id, String title, String content, LocalDate date, String url) {
         this.title = title;
         this.content = content;
-        this.authorId = authorId;
+       // this.authorId = authorId;
         this.url = url;
         this.date = date;
         this.id = id;

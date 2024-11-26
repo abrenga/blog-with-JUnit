@@ -1,0 +1,25 @@
+use db_my_blog;
+
+insert into db_my_blog.`user` 
+(email,username,password)
+values("123@gmail.com","{noop}1234", "Antonietta"),
+("123@gmail.com","{noop}1234", "Gina");
+
+insert into db_my_blog.category 
+(name)
+values("polemiche"),
+("Annunci"),
+("Dichiarazioni");
+
+/*(Integer id, String title, String content, User author,String url)*/
+insert into db_my_blog.post 
+(title,content,user_id,category_id,`date`, url)
+VALUES("primo Titolo", "primo contenuto", 1,1,now(),"img/ciao"),
+("secondo Titolo", "secondo contenuto", 1,2,now(),"img/ciao"),
+("terzo Titolo", "terzo contenuto",2,3,now(),"img/ciao"),
+("quarto Titolo", "quarto contenuto", 2,1,now(),"img/ciao");
+
+insert into db_my_blog.`role` 
+(name)
+VALUES("1"),
+("1");

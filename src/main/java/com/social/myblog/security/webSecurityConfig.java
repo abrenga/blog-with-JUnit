@@ -33,7 +33,7 @@ public class webSecurityConfig {
                 .securityMatcher("/**")
                 .authorizeHttpRequests(registry->registry
 
-                                .requestMatchers("/").permitAll()
+                                .requestMatchers("/posts/all").permitAll()
                                 .requestMatchers("/login").permitAll()
                                 .anyRequest().authenticated()
 

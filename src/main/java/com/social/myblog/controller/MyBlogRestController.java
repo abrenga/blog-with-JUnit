@@ -112,6 +112,7 @@ public class MyBlogRestController {
         response.setContent(postModificato.getContent());
         response.setTitle(postModificato.getTitle());
 
+
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }

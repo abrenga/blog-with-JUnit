@@ -7,5 +7,5 @@ import com.social.myblog.model.Post;
 import java.util.List;
 
 public interface PostRepo extends JpaRepository<Post, Integer>{
-    List<Post> findByUserId(User user);
+    List<Post> findByUserId(Integer userId);
 }

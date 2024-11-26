@@ -15,4 +15,6 @@ public interface IMyBlogService {
 
     public void deletePost(Integer id);
     public String uploadURl(MultipartFile file) throws IOException;
+
+    List<Post> getPostsByUserId(Integer userId);
 }
